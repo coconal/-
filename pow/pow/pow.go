@@ -58,7 +58,7 @@ type Miner struct {
     Balance uint `json:"balance"`
     //当前矿工正在挖的区块
     blockchain *Blockchain
-    // 用于通知 当接收到新区块的时候  不应该从原有的链继续往后挖
+    // 用于通知 当接收到新区块的时候不应该从原有的链继续往后挖
     waitForSignal chan interface{} `json:"-"`
 }
 
@@ -133,7 +133,7 @@ func (m Miner) run() {
     //死循环
     for ; ; count++ {
         //根据全局信息组装去了
-        blockWithoutProof := m.blockchain.assembleNewBlock(m.Id, 				[]byte(fmt.Sprintf("模拟区块数据:%d:%d", m.Id, count)))
+        blockWithoutProof := m.blockchain.assembleNewBlock(m.Id, []byte(fmt.Sprintf("模拟区块数据:%d:%d", m.Id, count)))
         block, finish := blockWithoutProof.Mine(m.waitForSignal)
         if !finish {
             //如果不满足条件则计数器增加继续计算hash并判断
@@ -170,7 +170,7 @@ func (b *BlockWithoutProof) Mine(waitForSignal chan interface{}) (*Block, bool) 
     var hash [32]byte
     nonce := 0
     for nonce != maxNonce {
-        //  判断一下是否别的矿工已经计算出来结果了 模拟 一旦收到其他矿工		的交易，立即停止计算
+        //  判断一下是否别的矿工已经计算出来结果了 模拟 一旦收到其他矿工的交易，立即停止计算
         select {
         case _ = <- waitForSignal:
             return nil, false
@@ -333,12 +333,3 @@ func (bc *Blockchain) GetBlockInfo() ([]Block, []Miner) {
     copy(miners, bc.miners)
     return blocks, miners
 }
-
-
-
-
-
-
-
-
-
