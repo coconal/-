@@ -264,7 +264,12 @@ func (bc *Blockchain) verifyNewBlock(block *Block) bool {
 
 func (b *Block) Verify() bool {
     
-    return true
+    vdata := b.prepareData(b.Nonce)
+    vhash := sha256.Sum256(vdata)
+    // if bytes.Compare(vhash[:], b.hash) == 0 {
+    //     return true
+    // }
+    return bytes.Equal(vhash[:], b.hash)
 }
 
 func (bc *Blockchain) notifyMiners(sponsor int64) {
